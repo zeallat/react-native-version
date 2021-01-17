@@ -394,25 +394,28 @@ function version(program, projectPath) {
 						project.targets.filter(Boolean).forEach(target => {
 							target.buildConfigurationsList.buildConfigurations.forEach(
 								config => {
-									if (target.name === appPkg.name) {
-										const CURRENT_PROJECT_VERSION = getNewVersionCode(
-											programOpts,
-											parseInt(
-												config.ast.value
-													.get("buildSettings")
-													.get("CURRENT_PROJECT_VERSION").text,
-												10
-											),
-											appPkg.version,
-											programOpts.resetBuild
-										);
+									// if (target.name === appPkg.name) {
+									const CURRENT_PROJECT_VERSION = getNewVersionCode(
+										programOpts,
+										parseInt(
+											config.ast.value
+												.get("buildSettings")
+												.get("CURRENT_PROJECT_VERSION").text,
+											10
+										),
+										appPkg.version,
+										programOpts.resetBuild
+									);
 
-										config.patch({
-											buildSettings: {
-												CURRENT_PROJECT_VERSION
-											}
-										});
-									}
+									const MARKETING_VERSION = appPkg.version;
+
+									config.patch({
+										buildSettings: {
+											CURRENT_PROJECT_VERSION,
+											MARKETING_VERSION
+										}
+									});
+									// }
 								}
 							);
 						});
@@ -435,7 +438,8 @@ function version(program, projectPath) {
 								Object.assign(
 									{},
 									json,
-									!programOpts.incrementBuild
+									!programOpts.incrementBuild &&
+										!isManagedByEnvVariable(json.CFBundleShortVersionString)
 										? {
 												CFBundleShortVersionString: appPkg.version
 										  }
