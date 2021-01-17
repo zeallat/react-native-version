@@ -385,6 +385,11 @@ function version(program, projectPath) {
 					throw new Error(`Xcode project not found in "${programOpts.ios}"`);
 				}
 
+				log(
+					{ text: `xcodeProjects.length: ${xcodeProjects.length}` },
+					programOpts.quiet
+				);
+
 				const projectFolder = path.join(programOpts.ios, xcodeProjects[0]);
 				const xcode = Xcode.open(path.join(projectFolder, "project.pbxproj"));
 				const plistFilenames = getPlistFilenames(xcode);
