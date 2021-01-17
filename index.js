@@ -435,7 +435,8 @@ function version(program, projectPath) {
 								Object.assign(
 									{},
 									json,
-									!programOpts.incrementBuild
+									!programOpts.incrementBuild &&
+										!isManagedByEnvVariable(json.CFBundleShortVersionString)
 										? {
 												CFBundleShortVersionString: appPkg.version
 										  }
